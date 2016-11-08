@@ -204,15 +204,15 @@ int main(int argc, char* argv[])
 
     // This relative path assumes launching from CNTK's binary folder, e.g. x64\Release
     const std::string modelBaseDir = path + "/../../Examples/Text/ATIS/";
-    const std::string modelWorkingDirectory = path + "/../../Examples/Text/ATIS/work/";
+    
 #else // on Linux
     pos = app.rfind("/");
     path = (pos == std::string::npos) ? "." : app.substr(0, pos);
 
-    // This relative path assumes launching from CNTK's binary folder, e.g. build/release/bin/
-    const std::string modelBaseDir = path + "/../../Examples/Text/ATIS/";
-    const std::string modelWorkingDirectory = path + "/../../../Examples/Text/ATIS/work/";
+    // This relative path assumes launching from CNTK's binary folder, e.g. build/cpu/release/bin/
+    const std::string modelBaseDir = path + "/../../../../Examples/Text/ATIS/";
 #endif
+    const std::string modelWorkingDirectory = modelBaseDir + "work/";
 
     const std::string modelFilePath = modelWorkingDirectory + "ATIS.slot.lstm";
 
