@@ -248,11 +248,21 @@ int main(int argc, char* argv[])
         }
 
         // Build source word vocab to id 
-        const::string sourceVocab = modelBaseDir + "/data/ATIS.vocab";
+        const::string sourceVocab = modelBaseDir + "/Data/ATIS.vocab";
+        if (stat(sourceVocab.c_str(), &statBuf) != 0)
+        {
+            fprintf(stderr, "Error: The file '%s' does not exist.\n", sourceVocab.c_str());
+            return(1);
+        }
         std::unordered_map<std::string, size_t> word2idxVocab = buildVocab(sourceVocab);
 
         // Build id to target word vocab
-        const::string targetVocab = modelBaseDir + "/data/ATIS.label";
+        const::string targetVocab = modelBaseDir + "/Data/ATIS.label";
+        if (stat(targetVocab.c_str(), &statBuf) != 0)
+        {
+            fprintf(stderr, "Error: The file '%s' does not exist.\n", targetVocab.c_str());
+            return(1);
+        }
         std::unordered_map<size_t, std::string> idx2wordVocab = buildInvVocab(targetVocab);
 
         // Use the following sentence as input example.
