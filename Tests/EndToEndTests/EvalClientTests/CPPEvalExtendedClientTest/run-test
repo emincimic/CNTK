@@ -22,8 +22,8 @@ else
 fi
 
 ATISDir=$TEST_ROOT_DIR/../../Examples/Text/ATIS
-DataDir=$ATISDir/data
-OutputDir=$ATISDir/data
+DataDir=$ATISDir/Data
+OutputDir=$ATISDir/Data
 ConfigDir=$ATISDir
 
 # Train model for evaluation

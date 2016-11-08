@@ -4,6 +4,7 @@
 //
 // CPPEvalExtendedClient.cpp : Sample application using the extended evaluation interface from C++
 //
+
 #include <sys/stat.h>
 #include <inttypes.h>
 #include <algorithm>
@@ -99,7 +100,7 @@ std::vector<std::string> feedInputVectors(std::string sentence, std::unordered_m
 {
     std::vector<std::string> words;
 
-    // split input sentence by space.
+    // Split input sentence by space.
     char delimiters = ' ';
     size_t begin = 0;
     size_t end = sentence.find_first_of(delimiters);
@@ -112,7 +113,7 @@ std::vector<std::string> feedInputVectors(std::string sentence, std::unordered_m
 
     words.push_back(sentence.substr(begin));
 
-    // convert words to ids
+    // Convert words to ids.
     std::vector<size_t> wordIds;
     for (size_t i = 0; i < words.size(); i++)
     {
@@ -120,19 +121,19 @@ std::vector<std::string> feedInputVectors(std::string sentence, std::unordered_m
         wordIds.push_back(id);
     }
 
-    // process the input words to construct network input vectors
+    // Process the input words to construct network input vectors.
     // As the sentence begins and ends with special tag, we will ignore the first and last word.
     for (size_t i = 1; i < words.size() - 1; i++)
     {
-        // current word
+        // Current word.
         size_t cwIdx = wordIds[i];
         addOneHotWord(inputBuffers, cwIdx, inputLayouts, 0);
 
-        // next word
+        // Next word.
         size_t nwIdx = wordIds[i + 1];
         addOneHotWord(inputBuffers, nwIdx, inputLayouts, 1);
 
-        // previous word
+        // Previous word.
         size_t pwIdx = wordIds[i - 1];
         addOneHotWord(inputBuffers, pwIdx, inputLayouts, 2);
     }
@@ -235,7 +236,7 @@ int main(int argc, char* argv[])
         vector<size_t> inputBufferSize;
         for (size_t i = 0; i < inputLayouts.size(); i++)
         {
-            fprintf(stderr, "Input node name: %ls\n", inputLayouts[i].m_name.c_str());
+            fprintf(stdout, "Input node name: %ls\n", inputLayouts[i].m_name.c_str());
             fprintf(stdout, "Input feature dimension: %" PRIu64 "\n", inputLayouts[i].m_numElements);
             inputBufferSize.push_back(inputLayouts[i].m_numElements);
         }
@@ -246,28 +247,28 @@ int main(int argc, char* argv[])
             outputBufferSize.push_back(outputLayouts[i].m_numElements);
         }
 
-        // build source word to id vocab
+        // Build source word vocab to id 
         const::string sourceVocab = modelBaseDir + "/data/ATIS.vocab";
         std::unordered_map<std::string, size_t> word2idxVocab = buildVocab(sourceVocab);
 
-        // build id to target word vocab
+        // Build id to target word vocab
         const::string targetVocab = modelBaseDir + "/data/ATIS.label";
         std::unordered_map<size_t, std::string> idx2wordVocab = buildInvVocab(targetVocab);
 
-        // input example, do language understanding by this sentence
+        // Use the following sentence as input example.
         // One single space is used as word sperator. 
         std::string inputSequences = "BOS i would like to find a flight from charlotte to las vegas that makes a stop in st. louis EOS";
 
         Values<float> inputBuffers = inputLayouts.CreateBuffers<float>(inputBufferSize);
         Values<float> outputBuffers = outputLayouts.CreateBuffers<float>(outputBufferSize);
 
-        // feed input sequence vectors to network
+        // Feed input sequence vectors to network
         std::vector<std::string> words = feedInputVectors(inputSequences, word2idxVocab, inputBuffers, inputLayouts);
 
-        // forward propagation
+        // Forward propagation
         eval->ForwardPass(inputBuffers, outputBuffers);
 
-        // get output from output layer
+        // Get output from output layer
         auto buf = outputBuffers[0].m_buffer;
         size_t bufSize = outputBuffers[0].m_buffer.size();
 
@@ -295,7 +296,7 @@ int main(int argc, char* argv[])
         eval->Destroy();
        
         // This pattern is used by End2EndTests to check whether the program runs to complete.
-        fprintf(stderr, "Evaluation complete.\n");
+        fprintf(stdout, "Evaluation complete.\n");
         ret = 0;
     }
     catch (const std::exception& err)
@@ -309,6 +310,7 @@ int main(int argc, char* argv[])
         ret = 1;
     }
 
+    fflush(stdout);
     fflush(stderr);
     return ret;
 }
